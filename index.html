@@ -1,8 +1,83 @@
 <html>
-<head>
-<title>index</title>
-</head>
-<body>
-<h1>Hello</h1>
-</body>
+	<head>
+		<title>index</title>
+	</head>
+	<body>
+		<h1>Hello, Music &#119070;</h1>
+		<button onclick="main()">Play</button>
+		<div id="boo"></div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.0.1/Tone.min.js"></script>
+		<script src="https://unpkg.com/vexflow/releases/vexflow-min.js"></script>
+		<script>
+//create a synth and connect it to the master output (your speakers)
+var synth;
+const MAJOR_PATTERN = [2, 2, 1, 2, 2, 2, 1];
+const MINOR_PATTERN = [2, 1, 2, 2, 1, 2, 2];
+function getFreq(note) {
+	return Math.pow(2, (note-69)/12)*440;
+}
+function majorScale(start_note) {
+	t = [];
+	t.push(start_note);
+	for (i=0;i<7;++i) {
+		start_note += MAJOR_PATTERN[i];
+		t.push(start_note);
+	}
+	return t;
+}
+function drawMusicSheet() {
+	VF = Vex.Flow;
+
+// Create an SVG renderer and attach it to the DIV element named "boo".
+var div = document.getElementById("boo")
+var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+
+// Size our svg:
+renderer.resize(500, 500);
+
+// And get a drawing context:
+var context = renderer.getContext();
+// Create a stave at position 10, 40 of width 400 on the canvas.
+var stave = new VF.Stave(10, 40, 400);
+
+// Add a clef and time signature.
+stave.addClef("treble").addTimeSignature("4/4");
+
+// Connect it to the rendering context and draw!
+stave.setContext(context).draw();
+
+var notes = [];
+	notes.push(new VF.StaveNote({clef: "treble", keys: ["a/4"], duration: "8" }));
+	notes.push(new VF.StaveNote({clef: "treble", keys: ["b/4"], duration: "8" }));
+	notes.push(new VF.StaveNote({clef: "treble", keys: ["c/4"], duration: "8" }));
+	notes.push(new VF.StaveNote({clef: "treble", keys: ["d/4"], duration: "8" }));
+	notes.push(new VF.StaveNote({clef: "treble", keys: ["e/4"], duration: "8" }));
+	notes.push(new VF.StaveNote({clef: "treble", keys: ["f/4"], duration: "8" }));
+	notes.push(new VF.StaveNote({clef: "treble", keys: ["g/4"], duration: "8" }));
+	notes.push(new VF.StaveNote({clef: "treble", keys: ["a/5"], duration: "8" }));
+
+// Create a voice in 4/4 and add above notes
+var voice = new VF.Voice({num_beats: 4,  beat_value: 4});
+voice.addTickables(notes);
+
+// Format and justify the notes to 400 pixels.
+var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 250);
+
+// Render voice
+voice.draw(context, stave);
+}
+function main() {
+	if (synth == null) {
+		console.log("hello");
+		synth = new Tone.Synth().toMaster();
+	}
+
+	// synth.triggerAttackRelease(440, '8n');
+	t = majorScale(69);
+	t.forEach((e, i) => {synth.triggerAttackRelease(getFreq(e), '16n', i/8+Tone.context.currentTime)});
+	
+}
+drawMusicSheet();
+		</script>
+	</body>
 </html>
