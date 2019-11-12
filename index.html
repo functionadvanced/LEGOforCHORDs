@@ -6,6 +6,10 @@
 		<h1>Hello, Music &#119070;</h1>
 		<button onclick="main()">Play</button>
 		<div id="boo"></div>
+		<div style="max-height: 300px;max-width:500px;overflow: scroll;">
+			<canvas id="myCanvas"></canvas>
+		</div>
+		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.0.1/Tone.min.js"></script>
 		<script src="https://unpkg.com/vexflow/releases/vexflow-min.js"></script>
 		<script>
@@ -25,46 +29,61 @@ function majorScale(start_note) {
 	}
 	return t;
 }
+function drawPiano() {
+	var canvas = document.getElementById("myCanvas");
+	var key_settings = {width: 80, height: 20};
+	canvas.width = key_settings.width * 10;
+	canvas.height = key_settings.height * 88+100;
+	var ctx = canvas.getContext("2d");
+	ctx.fillStyle = "#bdbdbd";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	for (i=0;i<88;++i) {
+		ctx.rect(20, 20+i*key_settings.height, key_settings.width, key_settings.height);
+	}
+	ctx.strokeStyle = "#7d7d7d";
+	ctx.stroke();
+	
+}
 function drawMusicSheet() {
 	VF = Vex.Flow;
 
-// Create an SVG renderer and attach it to the DIV element named "boo".
-var div = document.getElementById("boo")
-var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+	// Create an SVG renderer and attach it to the DIV element named "boo".
+	var div = document.getElementById("boo")
+	var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
 
-// Size our svg:
-renderer.resize(500, 500);
+	// Size our svg:
+	renderer.resize(500, 200);
 
-// And get a drawing context:
-var context = renderer.getContext();
-// Create a stave at position 10, 40 of width 400 on the canvas.
-var stave = new VF.Stave(10, 40, 400);
+	// And get a drawing context:
+	var context = renderer.getContext();
+	// Create a stave at position 10, 40 of width 400 on the canvas.
+	var stave = new VF.Stave(10, 40, 400);
 
-// Add a clef and time signature.
-stave.addClef("treble").addTimeSignature("4/4");
+	// Add a clef and time signature.
+	stave.addClef("treble").addTimeSignature("4/4");
 
-// Connect it to the rendering context and draw!
-stave.setContext(context).draw();
+	// Connect it to the rendering context and draw!
+	stave.setContext(context).draw();
 
-var notes = [];
-	notes.push(new VF.StaveNote({clef: "treble", keys: ["a/4"], duration: "8" }));
-	notes.push(new VF.StaveNote({clef: "treble", keys: ["b/4"], duration: "8" }));
-	notes.push(new VF.StaveNote({clef: "treble", keys: ["c/4"], duration: "8" }));
-	notes.push(new VF.StaveNote({clef: "treble", keys: ["d/4"], duration: "8" }));
-	notes.push(new VF.StaveNote({clef: "treble", keys: ["e/4"], duration: "8" }));
-	notes.push(new VF.StaveNote({clef: "treble", keys: ["f/4"], duration: "8" }));
-	notes.push(new VF.StaveNote({clef: "treble", keys: ["g/4"], duration: "8" }));
-	notes.push(new VF.StaveNote({clef: "treble", keys: ["a/5"], duration: "8" }));
+	var notes = [];
+		notes.push(new VF.StaveNote({clef: "treble", keys: ["a/4"], duration: "8" }));
+		notes.push(new VF.StaveNote({clef: "treble", keys: ["b/4"], duration: "8" }));
+		notes.push(new VF.StaveNote({clef: "treble", keys: ["c/4"], duration: "8" }));
+		notes.push(new VF.StaveNote({clef: "treble", keys: ["d/4"], duration: "8" }));
+		notes.push(new VF.StaveNote({clef: "treble", keys: ["e/4"], duration: "8" }));
+		notes.push(new VF.StaveNote({clef: "treble", keys: ["f/4"], duration: "8" }));
+		notes.push(new VF.StaveNote({clef: "treble", keys: ["g/4"], duration: "8" }));
+		notes.push(new VF.StaveNote({clef: "treble", keys: ["a/5"], duration: "8" }));
 
-// Create a voice in 4/4 and add above notes
-var voice = new VF.Voice({num_beats: 4,  beat_value: 4});
-voice.addTickables(notes);
+	// Create a voice in 4/4 and add above notes
+	var voice = new VF.Voice({num_beats: 4,  beat_value: 4});
+	voice.addTickables(notes);
 
-// Format and justify the notes to 400 pixels.
-var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 250);
+	// Format and justify the notes to 400 pixels.
+	var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 250);
 
-// Render voice
-voice.draw(context, stave);
+	// Render voice
+	voice.draw(context, stave);
 }
 function main() {
 	if (synth == null) {
@@ -78,6 +97,7 @@ function main() {
 	
 }
 drawMusicSheet();
+drawPiano();
 		</script>
 	</body>
 </html>
